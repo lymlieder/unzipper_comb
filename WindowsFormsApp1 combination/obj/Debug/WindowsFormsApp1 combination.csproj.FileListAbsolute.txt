@@ -1,0 +1,10 @@
+C:\Users\Master\Source\Repos\WindowsFormsApp1 combination\WindowsFormsApp1 combination\bin\Debug\WindowsFormsApp1 combination.exe.config
+C:\Users\Master\Source\Repos\WindowsFormsApp1 combination\WindowsFormsApp1 combination\bin\Debug\WindowsFormsApp1 combination.exe
+C:\Users\Master\Source\Repos\WindowsFormsApp1 combination\WindowsFormsApp1 combination\bin\Debug\WindowsFormsApp1 combination.pdb
+C:\Users\Master\Source\Repos\WindowsFormsApp1 combination\WindowsFormsApp1 combination\obj\Debug\WindowsFormsApp1_combination.Form1.resources
+C:\Users\Master\Source\Repos\WindowsFormsApp1 combination\WindowsFormsApp1 combination\obj\Debug\WindowsFormsApp1_combination.Properties.Resources.resources
+C:\Users\Master\Source\Repos\WindowsFormsApp1 combination\WindowsFormsApp1 combination\obj\Debug\WindowsFormsApp1 combination.csproj.GenerateResource.Cache
+C:\Users\Master\Source\Repos\WindowsFormsApp1 combination\WindowsFormsApp1 combination\obj\Debug\WindowsFormsApp1 combination.csproj.CoreCompileInputs.cache
+C:\Users\Master\Source\Repos\WindowsFormsApp1 combination\WindowsFormsApp1 combination\obj\Debug\WindowsFormsApp1 combination.exe
+C:\Users\Master\Source\Repos\WindowsFormsApp1 combination\WindowsFormsApp1 combination\obj\Debug\WindowsFormsApp1 combination.pdb
+C:\Users\Master\Source\Repos\WindowsFormsApp1 combination\WindowsFormsApp1 combination\obj\Debug\WindowsFormsApp1 combination.csprojResolveAssemblyReference.cache
