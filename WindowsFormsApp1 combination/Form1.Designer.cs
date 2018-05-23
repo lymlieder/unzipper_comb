@@ -51,6 +51,8 @@
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.label18 = new System.Windows.Forms.Label();
+            this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.label10 = new System.Windows.Forms.Label();
             this.fileOutPut_textBox3 = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
@@ -116,14 +118,15 @@
             // 
             // fileInPut_textBox2
             // 
-            this.fileInPut_textBox2.Location = new System.Drawing.Point(171, 50);
+            this.fileInPut_textBox2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.fileInPut_textBox2.Location = new System.Drawing.Point(183, 50);
             this.fileInPut_textBox2.Multiline = true;
             this.fileInPut_textBox2.Name = "fileInPut_textBox2";
             this.fileInPut_textBox2.ReadOnly = true;
             this.fileInPut_textBox2.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.fileInPut_textBox2.Size = new System.Drawing.Size(164, 74);
+            this.fileInPut_textBox2.Size = new System.Drawing.Size(152, 74);
             this.fileInPut_textBox2.TabIndex = 8;
-            this.fileInPut_textBox2.Text = "C:\\Users\\Master\\Desktop\\upload\\Test V18.bin";
+            this.fileInPut_textBox2.Text = "C:\\Users\\Master\\Desktop\\压缩算法\\upload\\Test V18.bin";
             this.fileInPut_textBox2.Enter += new System.EventHandler(this.fileInPut_textBox2_Enter);
             this.fileInPut_textBox2.Leave += new System.EventHandler(this.fileInPut_textBox2_Leave);
             // 
@@ -138,12 +141,15 @@
             // 
             // fileInPut2
             // 
+            this.fileInPut2.BackColor = System.Drawing.Color.CadetBlue;
+            this.fileInPut2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.fileInPut2.ForeColor = System.Drawing.Color.Ivory;
             this.fileInPut2.Location = new System.Drawing.Point(291, 19);
             this.fileInPut2.Name = "fileInPut2";
             this.fileInPut2.Size = new System.Drawing.Size(44, 23);
             this.fileInPut2.TabIndex = 6;
             this.fileInPut2.Text = "浏览";
-            this.fileInPut2.UseVisualStyleBackColor = true;
+            this.fileInPut2.UseVisualStyleBackColor = false;
             this.fileInPut2.Click += new System.EventHandler(this.fileInPut2_Click);
             this.fileInPut2.Enter += new System.EventHandler(this.fileInPut2_Enter);
             this.fileInPut2.Leave += new System.EventHandler(this.fileInPut2_Leave);
@@ -159,26 +165,30 @@
             // 
             // fileInPut1
             // 
-            this.fileInPut1.Location = new System.Drawing.Point(121, 20);
+            this.fileInPut1.BackColor = System.Drawing.Color.CadetBlue;
+            this.fileInPut1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.fileInPut1.ForeColor = System.Drawing.Color.Ivory;
+            this.fileInPut1.Location = new System.Drawing.Point(132, 20);
             this.fileInPut1.Name = "fileInPut1";
             this.fileInPut1.Size = new System.Drawing.Size(44, 23);
             this.fileInPut1.TabIndex = 3;
             this.fileInPut1.Text = "浏览";
-            this.fileInPut1.UseVisualStyleBackColor = true;
+            this.fileInPut1.UseVisualStyleBackColor = false;
             this.fileInPut1.Click += new System.EventHandler(this.fileInPut1_Click);
             this.fileInPut1.Enter += new System.EventHandler(this.fileInPut1_Enter);
             this.fileInPut1.Leave += new System.EventHandler(this.fileInPut1_Leave);
             // 
             // fileInPut_textBox1
             // 
+            this.fileInPut_textBox1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
             this.fileInPut_textBox1.Location = new System.Drawing.Point(17, 49);
             this.fileInPut_textBox1.Multiline = true;
             this.fileInPut_textBox1.Name = "fileInPut_textBox1";
             this.fileInPut_textBox1.ReadOnly = true;
             this.fileInPut_textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.fileInPut_textBox1.Size = new System.Drawing.Size(148, 74);
+            this.fileInPut_textBox1.Size = new System.Drawing.Size(159, 74);
             this.fileInPut_textBox1.TabIndex = 2;
-            this.fileInPut_textBox1.Text = "C:\\Users\\Master\\Desktop\\upload\\Test V17.bin";
+            this.fileInPut_textBox1.Text = "C:\\Users\\Master\\Desktop\\压缩算法\\upload\\Test V17.bin";
             this.fileInPut_textBox1.Enter += new System.EventHandler(this.fileInPut_textBox1_Enter);
             this.fileInPut_textBox1.Leave += new System.EventHandler(this.fileInPut_textBox1_Leave);
             // 
@@ -271,6 +281,7 @@
             this.search_textBox1.Size = new System.Drawing.Size(250, 21);
             this.search_textBox1.TabIndex = 12;
             this.search_textBox1.TextChanged += new System.EventHandler(this.search_textBox1_TextChanged);
+            this.search_textBox1.KeyUp += new System.Windows.Forms.KeyEventHandler(this.search_textBox1_KeyUp);
             // 
             // search_comboBox1
             // 
@@ -312,6 +323,8 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.label18);
+            this.tabPage1.Controls.Add(this.progressBar1);
             this.tabPage1.Controls.Add(this.label10);
             this.tabPage1.Controls.Add(this.fileOutPut_textBox3);
             this.tabPage1.Controls.Add(this.label7);
@@ -333,6 +346,22 @@
             this.tabPage1.Text = "生成压缩包";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
+            // label18
+            // 
+            this.label18.AutoSize = true;
+            this.label18.Location = new System.Drawing.Point(395, 303);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(53, 12);
+            this.label18.TabIndex = 16;
+            this.label18.Text = "生成进度";
+            // 
+            // progressBar1
+            // 
+            this.progressBar1.Location = new System.Drawing.Point(453, 296);
+            this.progressBar1.Name = "progressBar1";
+            this.progressBar1.Size = new System.Drawing.Size(392, 23);
+            this.progressBar1.TabIndex = 15;
+            // 
             // label10
             // 
             this.label10.AutoSize = true;
@@ -341,10 +370,11 @@
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(65, 10);
             this.label10.TabIndex = 6;
-            this.label10.Text = "压缩文件路径";
+            this.label10.Text = "生成文件路径";
             // 
             // fileOutPut_textBox3
             // 
+            this.fileOutPut_textBox3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
             this.fileOutPut_textBox3.Location = new System.Drawing.Point(8, 35);
             this.fileOutPut_textBox3.Multiline = true;
             this.fileOutPut_textBox3.Name = "fileOutPut_textBox3";
@@ -352,14 +382,14 @@
             this.fileOutPut_textBox3.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.fileOutPut_textBox3.Size = new System.Drawing.Size(121, 69);
             this.fileOutPut_textBox3.TabIndex = 5;
-            this.fileOutPut_textBox3.Text = "C:\\Users\\Master\\Desktop\\";
+            this.fileOutPut_textBox3.Text = "C:\\Users\\Master\\Desktop\\压缩算法\\upload\\";
             this.fileOutPut_textBox3.Enter += new System.EventHandler(this.fileOutPut_textBox3_Enter);
             this.fileOutPut_textBox3.Leave += new System.EventHandler(this.fileOutPut_textBox3_Leave);
             // 
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(6, 305);
+            this.label7.Location = new System.Drawing.Point(6, 304);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(383, 12);
             this.label7.TabIndex = 8;
@@ -367,12 +397,16 @@
             // 
             // fileOutPut
             // 
+            this.fileOutPut.BackColor = System.Drawing.Color.CadetBlue;
+            this.fileOutPut.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.fileOutPut.ForeColor = System.Drawing.Color.Ivory;
             this.fileOutPut.Location = new System.Drawing.Point(85, 6);
             this.fileOutPut.Name = "fileOutPut";
+            this.fileOutPut.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.fileOutPut.Size = new System.Drawing.Size(44, 23);
             this.fileOutPut.TabIndex = 4;
             this.fileOutPut.Text = "浏览";
-            this.fileOutPut.UseVisualStyleBackColor = true;
+            this.fileOutPut.UseVisualStyleBackColor = false;
             this.fileOutPut.Click += new System.EventHandler(this.fileOutPut_Click);
             this.fileOutPut.Enter += new System.EventHandler(this.fileOutPut_Enter);
             this.fileOutPut.Leave += new System.EventHandler(this.fileOutPut_Leave);
@@ -385,7 +419,7 @@
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(115, 10);
             this.label6.TabIndex = 14;
-            this.label6.Text = "压缩文件名（不含后缀）";
+            this.label6.Text = "生成文件名（不含后缀）";
             // 
             // label5
             // 
@@ -401,20 +435,21 @@
             this.groupBox3.Controls.Add(this.detailShow_textBox);
             this.groupBox3.Location = new System.Drawing.Point(142, 6);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(709, 295);
+            this.groupBox3.Size = new System.Drawing.Size(709, 289);
             this.groupBox3.TabIndex = 4;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "输出结果";
             // 
             // detailShow_textBox
             // 
+            this.detailShow_textBox.BackColor = System.Drawing.SystemColors.Info;
             this.detailShow_textBox.Location = new System.Drawing.Point(6, 22);
             this.detailShow_textBox.MaxLength = 327670000;
             this.detailShow_textBox.Multiline = true;
             this.detailShow_textBox.Name = "detailShow_textBox";
             this.detailShow_textBox.ReadOnly = true;
             this.detailShow_textBox.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.detailShow_textBox.Size = new System.Drawing.Size(697, 267);
+            this.detailShow_textBox.Size = new System.Drawing.Size(697, 257);
             this.detailShow_textBox.TabIndex = 7;
             this.detailShow_textBox.TextChanged += new System.EventHandler(this.detailShow_textBox_TextChanged);
             // 
@@ -430,12 +465,13 @@
             // 
             // start
             // 
+            this.start.BackColor = System.Drawing.Color.PaleGreen;
             this.start.Location = new System.Drawing.Point(8, 243);
             this.start.Name = "start";
             this.start.Size = new System.Drawing.Size(100, 23);
             this.start.TabIndex = 11;
-            this.start.Text = "生成";
-            this.start.UseVisualStyleBackColor = true;
+            this.start.Text = "1. 生成";
+            this.start.UseVisualStyleBackColor = false;
             this.start.Click += new System.EventHandler(this.start_Click);
             // 
             // type_comboBox1
@@ -466,6 +502,7 @@
             // 
             // resultFileName_textBox
             // 
+            this.resultFileName_textBox.BackColor = System.Drawing.Color.LightCyan;
             this.resultFileName_textBox.Location = new System.Drawing.Point(9, 132);
             this.resultFileName_textBox.Multiline = true;
             this.resultFileName_textBox.Name = "resultFileName_textBox";
@@ -522,16 +559,18 @@
             // 
             // check
             // 
+            this.check.BackColor = System.Drawing.Color.DeepSkyBlue;
             this.check.Location = new System.Drawing.Point(541, 270);
             this.check.Name = "check";
             this.check.Size = new System.Drawing.Size(119, 23);
             this.check.TabIndex = 18;
-            this.check.Text = "验证";
-            this.check.UseVisualStyleBackColor = true;
+            this.check.Text = "3. 验证";
+            this.check.UseVisualStyleBackColor = false;
             this.check.Click += new System.EventHandler(this.check_Click);
             // 
             // checkResult_textBox5
             // 
+            this.checkResult_textBox5.BackColor = System.Drawing.Color.LightSkyBlue;
             this.checkResult_textBox5.Location = new System.Drawing.Point(412, 32);
             this.checkResult_textBox5.Multiline = true;
             this.checkResult_textBox5.Name = "checkResult_textBox5";
@@ -541,6 +580,7 @@
             // 
             // checkDetail_textBox1
             // 
+            this.checkDetail_textBox1.BackColor = System.Drawing.SystemColors.Info;
             this.checkDetail_textBox1.Location = new System.Drawing.Point(7, 15);
             this.checkDetail_textBox1.Multiline = true;
             this.checkDetail_textBox1.Name = "checkDetail_textBox1";
@@ -595,6 +635,7 @@
             // 
             // unzipName_textBox4
             // 
+            this.unzipName_textBox4.BackColor = System.Drawing.Color.LightGoldenrodYellow;
             this.unzipName_textBox4.Location = new System.Drawing.Point(8, 161);
             this.unzipName_textBox4.Multiline = true;
             this.unzipName_textBox4.Name = "unzipName_textBox4";
@@ -605,12 +646,13 @@
             // 
             // unzip
             // 
+            this.unzip.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(128)))));
             this.unzip.Location = new System.Drawing.Point(8, 255);
             this.unzip.Name = "unzip";
             this.unzip.Size = new System.Drawing.Size(151, 23);
             this.unzip.TabIndex = 17;
-            this.unzip.Text = "解压";
-            this.unzip.UseVisualStyleBackColor = true;
+            this.unzip.Text = "2. 解压";
+            this.unzip.UseVisualStyleBackColor = false;
             this.unzip.Click += new System.EventHandler(this.unzip_Click);
             // 
             // label12
@@ -629,10 +671,13 @@
             this.button1.Size = new System.Drawing.Size(44, 23);
             this.button1.TabIndex = 7;
             this.button1.Text = "浏览";
-            this.button1.UseVisualStyleBackColor = true;
+            this.button1.UseVisualStyleBackColor = false;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.button1.Leave += new System.EventHandler(this.button1_Leave);
             // 
             // unzipper_textBox1
             // 
+            this.unzipper_textBox1.BackColor = System.Drawing.Color.Beige;
             this.unzipper_textBox1.Location = new System.Drawing.Point(8, 49);
             this.unzipper_textBox1.Multiline = true;
             this.unzipper_textBox1.Name = "unzipper_textBox1";
@@ -663,12 +708,15 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoSize = true;
+            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.ClientSize = new System.Drawing.Size(910, 526);
             this.Controls.Add(this.groupBox5);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.groupBox2);
+            this.MaximizeBox = false;
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.Text = "SRWF-差异化升级器";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
@@ -750,6 +798,8 @@
         private System.Windows.Forms.TextBox checkResult_textBox5;
         private System.Windows.Forms.TextBox checkDetail_textBox1;
         private System.Windows.Forms.Label label17;
+        private System.Windows.Forms.Label label18;
+        private System.Windows.Forms.ProgressBar progressBar1;
     }
 }
 

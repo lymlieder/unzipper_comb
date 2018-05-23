@@ -31,7 +31,7 @@ namespace WindowsFormsApp1_combination
 
         static byte fileAddressLength = 0;//文件最大地址位组数，最大为4，最小为1
 
-        static bool searchLoop = true;
+        static bool rootLoop = true;
 
         static int judgeLength = 3;
         static uint cursorRange = 256;
@@ -49,6 +49,8 @@ namespace WindowsFormsApp1_combination
             type_comboBox1.SelectedIndex = 0;
             fileType = type_comboBox1.SelectedItem.ToString();
 
+            //unzip.Enabled = false;
+            check.Enabled = false;
             string[] arraySearch = { "SRWF" };
             search_comboBox1.DataSource = arraySearch;
             search_comboBox1.SelectedIndex = 0;
@@ -63,8 +65,20 @@ namespace WindowsFormsApp1_combination
             checkTip = false;
             unzipName_textBox4.Text = resultFileName_textBox.Text + "_unzipper.bin";
             massageCount = 0;
+            test();
         }
 
+        private void test()
+        {
+            FileStream testWriter1 = new FileStream(fileOutPut_textBox3.Text + "/text1.bin", FileMode.Create, FileAccess.Write);
+            FileStream testWriter2 = new FileStream(fileOutPut_textBox3.Text + "/text2.bin", FileMode.Create, FileAccess.Write);
+            byte[] test1 = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 3, 2, 4, 3, 5, 4, 6, 5, 7, 6, 8, 7, 9, 0, 1, 2, 3, 2, 3, 4, 3, 4, 5, 4, 5, 6, 5, 6, 7, 6, 7, 8, 7, 8, 9, 8, 9, 0 };
+            byte[] test2 = { 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 3, 2, 4, 1, 3, 2, 4, 1, 3, 2, 4, 3, 2, 1, 3, 2, 1, 3, 2, 1 };
+            testWriter1.Write(test1, 0, test1.Length);
+            testWriter2.Write(test2, 0, test2.Length);
+            testWriter1.Close();
+            testWriter2.Close();
+        }
         private void checkForPara()
         {
             fileAdd1_ok = true;
@@ -111,6 +125,7 @@ namespace WindowsFormsApp1_combination
                 resultRecoder.Close();
                 recoder.Close();
                 start.Enabled = true;
+                detailShow_textBox.AppendText(DateTime.Now.ToString() + "  保存成功: " + address + "\r\n\r\n");
             }
         }
 
@@ -304,6 +319,30 @@ namespace WindowsFormsApp1_combination
             checkForPara();
         }
 
+        private void button1_Click(object sender, EventArgs e)
+        {
+            if (folderBrowserDialog1.ShowDialog() == DialogResult.OK)
+                unzipper_textBox1.Text = folderBrowserDialog1.SelectedPath + @"\";
+            if (unzipper_textBox1.TextLength != 0)
+                unzip.Enabled = true;
+        }
+
+        private void button1_Leave(object sender, EventArgs e)
+        {
+            if (unzipper_textBox1.TextLength == 0)
+                unzipper_textBox1.Text = fileOutPut_textBox3.Text;
+            else
+                unzip.Enabled = true;
+        }
+
+        private void search_textBox1_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (search_textBox1.TextLength != 0)
+                search_comboBox1.Enabled = false;
+            else
+                search_comboBox1.Enabled = true;
+        }
+
         private void fileInPut2_Click(object sender, EventArgs e)
         {
             errorProvider1.Clear();
@@ -358,6 +397,7 @@ namespace WindowsFormsApp1_combination
                 search.Enabled = false;
                 start.Enabled = false;
                 detailShow_textBox.Clear();
+                checkTip = false;
                 //load();
 
                 //头
@@ -373,27 +413,38 @@ namespace WindowsFormsApp1_combination
                 resultFileAddress = fileOutPut_textBox3.Text + resultFileName_textBox.Text + fileType;
                 fileReader1 = new FileStream(fileInPut_textBox1.Text, FileMode.Open, FileAccess.Read);
                 fileReader2 = new FileStream(fileInPut_textBox2.Text, FileMode.Open, FileAccess.Read);
-                resultWriter = new FileStream(resultFileAddress, FileMode.Create, FileAccess.Write);
+                resultWriter = new FileStream(resultFileAddress, FileMode.Create, FileAccess.ReadWrite);
                 finalWriter = resultWriter; //new FileStream(@"C:\Users\Master\Desktop\finalWriter.bin", FileMode.Create, FileAccess.Write);
                 if (fileType == ".txt")
                 {
                     resultWriterForText = new StreamWriter(resultWriter, Encoding.UTF8);
                     resultWriterForText.AutoFlush = true;
                 }
-
-                Console.WriteLine(@"格        式：{0}", 0);
-                detailShow_textBox.AppendText(string.Format(@"格        式：{0}", 0) + "\r\n");
-                Console.WriteLine(@"厂 商 代 码 ：{0}", 0);
-                detailShow_textBox.AppendText(string.Format(@"厂 商 代 码 ：{0}", 0) + "\r\n");
-                Console.WriteLine(@"目 标 版 本 ：{0}", 0);
-                detailShow_textBox.AppendText(string.Format(@"目 标 版 本 ：{0}", 0) + "\r\n");
-                Console.WriteLine(@"升级包校验码：{0}", 0);
-                detailShow_textBox.AppendText(string.Format(@"升级包校验码：{0}", 0) + "\r\n");
-                Console.WriteLine(@"升级后校验码：{0}", 0);
-                detailShow_textBox.AppendText(string.Format(@"升级后校验码：{0}", 0) + "\r\n");
-                Console.WriteLine(@"保        留：{0}\r\n", 0);
-                detailShow_textBox.AppendText(string.Format(@"保        留：{0}", 0) + "\r\n\r\n");
-
+                getHead();
+                Console.WriteLine(@"格        式：");
+                detailShow_textBox.AppendText(string.Format(@"格        式："));
+                printHead(head1_Byte);
+                Console.WriteLine(@"厂 商  代 码：");
+                detailShow_textBox.AppendText(string.Format(@"厂 商  代 码："));
+                printHead(head2_Byte);
+                Console.WriteLine(@"目 标  版 本：");
+                detailShow_textBox.AppendText(string.Format(@"目 标  版 本："));
+                printHead(head3_Byte);
+                Console.WriteLine(@"升级包校验码：");
+                detailShow_textBox.AppendText(string.Format(@"升级包校验码："));
+                printHead(head4_Byte);
+                Console.WriteLine(@"升级后校验码：");
+                detailShow_textBox.AppendText(string.Format(@"升级后校验码："));
+                printHead(head5_Byte);
+                Console.WriteLine(@"保        留：");
+                detailShow_textBox.AppendText(string.Format(@"保        留："));
+                printHead(head6_Byte);
+                Console.WriteLine(@"");
+                detailShow_textBox.AppendText("\r\n");
+                
+                progressBar1.Maximum = (int)fileReader1.Length;//设置最大长度值
+                progressBar1.Value = 0;//设置当前值
+                progressBar1.Step = 1;//设置没次增长多少
                 //写入头
                 if (fileType == ".bin")
                 {
@@ -462,12 +513,14 @@ namespace WindowsFormsApp1_combination
                     resultWriterForText.WriteLine();
                 }
 
+                massageCount = 0;
                 dataLineListA = new List<DataLineStruct>();
                 dataLineListB = new List<DataLineStruct>();
                 dataLineListA.Clear();
                 dataLineListB.Clear();
                 play();
                 WriteListToFile();
+                writeTailAsCRC();
                 start.Enabled = true;
                 search.Enabled = true;
                 fileReader1.Close();
@@ -475,8 +528,149 @@ namespace WindowsFormsApp1_combination
                 resultWriter.Close();
                 finalWriter.Close();
                 detailShow_textBox.AppendText("\r\n");
-                detailShow_textBox.AppendText("内容包数量：" + massageCount);
+                detailShow_textBox.AppendText("内容包数量：" + massageCount + "\r\n\r\n");
+                unzip.Enabled = true;
             }
+        }
+
+        private void printHead(byte[] array)
+        {
+            if(checkTip == false)
+            {
+                for (int i = 0; i < array.Length - 1; i++)
+                {
+                    Console.Write(@"{0:x},", array[i]);
+                    detailShow_textBox.AppendText(string.Format(@"{0:x},", array[i]));
+                }
+                Console.WriteLine(@"{0:x};", array[array.Length - 1]);
+                detailShow_textBox.AppendText(string.Format(@"{0:x};", array[array.Length - 1]) + "\r\n");
+            }
+            else
+            {
+                for (int i = 0; i < array.Length - 1; i++)
+                {
+                    Console.Write(@"{0:x},", array[i]);
+                    checkDetail_textBox1.AppendText(string.Format(@"{0:x},", array[i]));
+                }
+                Console.WriteLine(@"{0:x};", array[array.Length - 1]);
+                checkDetail_textBox1.AppendText(string.Format(@"{0:x};", array[array.Length - 1]) + "\r\n");
+            }
+        }
+
+        private void getHead()
+        {
+            int s;
+            Int64 i = 0;
+            Int64 j = 0;
+            byte[] oldST = new byte[fileReader1.Length];
+            while((s = fileReader1.ReadByte())!= -1)
+            {
+                oldST[i] = (byte)s;
+                i++;
+            }
+            byte[] newST = new byte[fileReader2.Length];
+            while((s = fileReader2.ReadByte())!= -1)
+            {
+                newST[j] = (byte)s;
+                j++;
+            }
+            fileReader2.Position = 0;
+            //第一位，压缩升级标识
+            {
+                transByteArray(0xaa55aaff, head1_Byte);
+            }
+            //第四位，旧CRC
+            {
+                UInt16 oldCRC = CalCrc16(0x8408, oldST, (UInt32)fileReader1.Length);
+                transByteArray(oldCRC, head4_Byte);
+            }
+            //第五位，新CRC
+            {
+                UInt16 newCRC = CalCrc16(0x8408, newST, (UInt32)fileReader2.Length);
+                transByteArray(newCRC, head5_Byte);
+            }
+            //第六位，旧文件大小/新文件大小，低位在前
+            {
+                Int64 oldLength = fileReader1.Length;
+                head6_Byte[0] = (byte)(oldLength & 0xff);
+                oldLength >>= 8;
+                head6_Byte[1] = (byte)(oldLength & 0xff);
+                Int64 newLength = fileReader2.Length;
+                head6_Byte[2] = (byte)(newLength & 0xff);
+                newLength >>= 8;
+                head6_Byte[3] = (byte)(newLength & 0xff);
+            }
+        }
+
+        private void writeTailAsCRC()
+        {
+            finalWriter.Position = 0;
+            int s;
+            Int64 i = 0;
+            byte[] st = new byte[finalWriter.Length];
+            while ((s = finalWriter.ReadByte()) != -1)
+            {
+                st[i] = (byte)s;
+                i++;
+            }
+            UInt16 crcTail = CalCrc16(0x8408, st, (UInt32)finalWriter.Length);
+            if(fileType == ".bin")
+            {
+                resultWriter.WriteByte(0xfa);
+                resultWriter.WriteByte((byte)(crcTail & 0xFF));
+                crcTail >>= 8;
+                resultWriter.WriteByte((byte)(crcTail & 0xFF));
+            }
+            else if(fileType == ".txt")
+            {
+                resultWriterForText.Write(0xfa.ToString("x2") + " ");
+                resultWriterForText.Write((crcTail & 0xff).ToString("x2") + " ");
+                crcTail >>= 8;
+                resultWriterForText.WriteLine((crcTail & 0xff).ToString("x2") + " ");
+            }
+        }
+
+        private void transByteArray(Int64 number, byte[] byteArray)
+        {
+            int k = 0;
+            while(number > 0 && k < byteArray.Length)
+            {
+                byteArray[k] = (byte)(number & 0xFF);//高位在前
+                k++;
+                number >>= 8;
+            }
+            while(k < byteArray.Length)
+            {
+                byteArray[k] = 0;
+                k++;
+            }
+        }
+
+        private UInt16 CalCrc16(UInt16 Seed,  byte[] BufPtr, UInt32 Len)
+        {
+            UInt16 crc = 0xFFFF;
+            int i,j;
+            j = 0;
+            while ((Len--) > 0)
+            {
+                crc ^= BufPtr[j];
+                for (i = 0; i < 8; i++)
+                {
+                    if ((crc & 0x0001) != 0)
+                    {
+                        crc >>= 1;
+                        crc ^= Seed;
+                    }
+                    else
+                    {
+                        crc >>= 1;
+                    }
+                }
+                j++;
+            }
+            crc ^= 0xFFFF;
+
+            return crc;
         }
 
         private void load()
@@ -514,6 +708,9 @@ namespace WindowsFormsApp1_combination
             if (fileReader2.Length > 0xFFFF)
                 return;
 
+            fileReader1.Position = 0;
+            fileReader2.Position = 0;
+
             long fileLength = Math.Max(fileReader1.Length, fileReader2.Length);
             if ((fileLength & 0xffffff00) == 0)
                 fileAddressLength = 1;
@@ -542,7 +739,7 @@ namespace WindowsFormsApp1_combination
             while (bigLoop)//步步跟进//////////////////////////////////////////////////////////*************一样循环
             {
                 int a = 0; int b = 0;
-                searchLoop = true;
+                rootLoop = true;
                 a = fileReader1.ReadByte();
                 b = fileReader2.ReadByte();
 
@@ -556,8 +753,8 @@ namespace WindowsFormsApp1_combination
                     if (b == -1)
                         fileReader1.Position--;
                     //记录各个重要节点
-                    Int64 locationTailA = fileReader1.Position - 2;//上一个连路径的末尾
-                    Int64 locationTailB = fileReader2.Position - 2;//上一个连路径的末尾
+                    //Int64 locationTailA = fileReader1.Position - 2;//上一个连路径的末尾
+                    //Int64 locationTailB = fileReader2.Position - 2;//上一个连路径的末尾
                     Int64 locationHeadHoldA = fileReader1.Position - 1;//记录查找时断路径区域的开头
                     Int64 locationHeadHoldB = fileReader2.Position - 1;//记录查找时断路径区域的开头
 
@@ -573,39 +770,71 @@ namespace WindowsFormsApp1_combination
                     Int64 locationCursorB = locationRootB;
 
                     //root
-                    while (searchLoop)//////////////////////////////////////////////////////////*************root循环
+                    while (rootLoop)//////////////////////////////////////////////////////////*************root循环
                     {
-                        fileReader1.Position = locationRootA;
-                        fileReader2.Position = locationRootB;
+                        //file前行
+                        if (locationRootA < fileReader1.Length)
+                            fileReader1.Position = locationRootA;
+                        if (locationRootB < fileReader2.Length)
+                            fileReader2.Position = locationRootB;
 
-                        int rootResultA = fileReader1.Read(rootA, 0, judgeLength);//读取、记录root
-                        int rootResultB = fileReader2.Read(rootB, 0, judgeLength);
-
-                        if ((rootResultA == 0) && (rootResultB == 0))//如果root到底
+                        //root后判断
+                        if(locationRootA >= fileReader1.Length && locationRootB >= fileReader2.Length)
                         {
-                            if(checkTip == true)
+                            if (checkTip == true)
                                 CheckRecordAndQuit(locationHeadHoldA, locationHeadHoldB, locationRootA, locationRootB, 2);
                             else
                                 RecordAndQuit(locationHeadHoldA, locationHeadHoldB, locationRootA, locationRootB, 2);
-                            bigLoop = false;
-                            break;
+
+                            return;
                         }
+
+                        //异常
+                        if(locationRootA > fileReader1.Length || locationRootB > fileReader2.Length)
+                        {
+
+                        }
+
+                        //root前行
+                        int rootResultA = fileReader1.Read(rootA, 0, judgeLength);//读取、记录root
+                        int rootResultB = fileReader2.Read(rootB, 0, judgeLength);
 
                         Int64 activeA = 0; Int64 activeB = 0;
 
-                        while ((Math.Max(activeA, activeB) < cursorRange) && (searchLoop == true))/////////*************游标循环
+                        //游标循环
+                        while ((Math.Max(activeA, activeB) < cursorRange) && (rootLoop == true))/////////*************不同区域游标循环
                         {
                             fileReader1.Position = locationRootA + activeA;
                             fileReader2.Position = locationRootB + activeB;
                             int resultA = fileReader1.Read(cursorA, 0, judgeLength);//得到cursor，等待比较
                             int resultB = fileReader2.Read(cursorB, 0, judgeLength);
 
-                            if ((resultA == 0) && (resultB == 0))////////////////----------如果双到底
+                            //游标双到底
+                            if ((resultA == 0) && (resultB == 0))
                             {
-                                if (activeA > 0)
-                                    locationRootB++;
-                                if (activeB > 0)
+                                //root++
+                                if (locationRootA < fileReader1.Length)//activeA > 0)
                                     locationRootA++;
+                                if (locationRootB < fileReader2.Length)//activeB > 0)
+                                    locationRootB++;
+
+                                //判断是否结束
+                                if (locationRootA == fileReader1.Length && locationRootB == fileReader2.Length)
+                                {
+                                    if (checkTip == true)
+                                        CheckRecordAndQuit(locationHeadHoldA, locationHeadHoldB, locationRootA, locationRootB, 1);//记录，做相应工作
+                                    else
+                                        RecordAndQuit(locationHeadHoldA, locationHeadHoldB, locationRootA, locationRootB, 1);//记录，做相应工作
+
+                                    return;
+                                }
+                                //异常
+                                if (locationRootA > fileReader1.Length || locationRootB > fileReader2.Length)
+                                {
+
+                                }
+
+                                //处理判断root
                                 break;
                             }
 
@@ -636,24 +865,25 @@ namespace WindowsFormsApp1_combination
                                 fileReader1.Position = locationRootA;//重置文件位置为一样区域开头，开始一样查找，找下一个不一样
                                 fileReader2.Position = locationRootB;//文件重置查找位置
 
-                                if (searchLoop == false)//说明找到了
+                                if (rootLoop == false)//说明找到了
                                     break;
                             }
 
-                            if ((resultA > 0) && (rootResultA > 0))
+                            if (resultA > 0)
                                 activeA++;
-                            if ((resultB > 0) && (rootResultB > 0))
+                            if (resultB > 0)
                                 activeB++;
                         }
 
-                        if (Math.Max(activeA, activeB) >= cursorRange)
+                        //游标超限，root++
+                        if (Math.Max(activeA, activeB) >= cursorRange && bigLoop == true)
                         {
-                            if ((activeA > 0) && (rootResultA > 0))
+                            if (locationRootA < fileReader1.Length)
                                 locationRootB++;
-                            if ((activeB > 0) && (rootResultB > 0))
+                            if (locationRootA < fileReader1.Length)
                                 locationRootA++;
                         }
-                        if (searchLoop == false)
+                        if (rootLoop == false || bigLoop == false)
                             break;
                     }
                 }
@@ -665,6 +895,9 @@ namespace WindowsFormsApp1_combination
 
         private void RecordAndQuit(Int64 theLocationHeadHoldA, Int64 theLocationHeadHoldB, Int64 theLocationRootA, Int64 theLocationRootB, int type)
         {
+            progressBar1.Value = (int)theLocationRootA;//设置当前值
+            //label19.Text = (((theLocationRootA * 100) / fileReader1.Length)).ToString() + "%";
+            //label19.Text = "%";
             massageCount++;
             Int64 lengthA = theLocationRootA - theLocationHeadHoldA;
             Int64 lengthB = theLocationRootB - theLocationHeadHoldB; //int i = 0;
@@ -719,10 +952,6 @@ namespace WindowsFormsApp1_combination
                         int i;
                         for (i = 0; i < dataLineListB.Count; i++)
                         {
-                            if (theLocationHeadHoldA == 58)
-                            {
-
-                            }
                             if ((dataLineListB[i].commenValue == res[0]) && (dataLineListB[i].bbSecondValue == res[1]))
                             {
                                 dataLineListB[i].positionList.Add(theLocationHeadHoldA);
@@ -889,7 +1118,7 @@ namespace WindowsFormsApp1_combination
                     resultWriterForText.WriteLine();
                 }
             }
-            searchLoop = false;
+            rootLoop = false;
         }
 
         static void WriteListToFile()
@@ -1039,38 +1268,46 @@ namespace WindowsFormsApp1_combination
 
         private void unzip_Click(object sender, EventArgs e)
         {
-            Console.WriteLine("Hello World!");
-            resultFileAddress = fileOutPut_textBox3.Text + resultFileName_textBox.Text + fileType;
-            if(resultFileAddress == null)
+            try
             {
-                unzipperLabel.Text = "压缩文件地址为空，请返回“生成压缩包”确认";
-                return;
-            }
+                diff = 0;
+                if (unzipper_textBox1.TextLength == 0)
+                    unzipper_textBox1.Text = fileOutPut_textBox3.Text;
+                Console.WriteLine("Hello World!");
+                resultFileAddress = fileOutPut_textBox3.Text + resultFileName_textBox.Text + fileType;
+                if (resultFileAddress == null)
+                {
+                    unzipperLabel.Text = "压缩文件地址为空，请返回“生成压缩包”确认";
+                    return;
+                }
 
-            fileBaseReader = new FileStream(fileInPut_textBox1.Text, FileMode.Open, FileAccess.Read);//fileReader1;//new FileStream(@"C:\Users\Master\Desktop\upload\Test V17.bin", FileMode.Open, FileAccess.Read);
-            fileResultReader = new FileStream(resultFileAddress, FileMode.Open, FileAccess.Read);//new FileStream(@"C:\Users\Master\Desktop\App1 Result.bin", FileMode.Open, FileAccess.Read);
-            fileList = new List<byte>();
-            BuildFileArray();
-            fileResultReader.Position = 0;
-            if (fileList.Count != fileBaseReader.Length)
+                fileBaseReader = new FileStream(fileInPut_textBox1.Text, FileMode.Open, FileAccess.Read);//fileReader1;//new FileStream(@"C:\Users\Master\Desktop\upload\Test V17.bin", FileMode.Open, FileAccess.Read);
+                fileResultReader = new FileStream(resultFileAddress, FileMode.Open, FileAccess.Read);//new FileStream(@"C:\Users\Master\Desktop\App1 Result.bin", FileMode.Open, FileAccess.Read);
+                fileList = new List<byte>();
+                BuildFileArray();
+                fileResultReader.Position = 0;
+
+                fileBaseReader.Close();
+
+                fileWriter = new FileStream(unzipper_textBox1.Text + unzipName_textBox4.Text, FileMode.Create, FileAccess.Write);
+                BuiltFileList();
+                //fileBaseReader.Close();
+
+                fileResultReader.Position = 0;
+                WriteToFile();
+                fileResultReader.Close();
+                fileWriter.Close();
+                if (successTip == true)
+                    unzipperLabel.Text = "解压成功";
+                else
+                    unzipperLabel.Text = errorString;
+                check.Enabled = true;
+            }
+            catch(Exception ex)
             {
-                unzipperLabel.Text = "转录list元素个数错误";
-                Console.WriteLine(@"转录list元素个数错误");
-                return;
+                checkDetail_textBox1.AppendText(DateTime.Now.ToString() + "  " + ex.Message);
             }
-            fileBaseReader.Close();
-
-            fileWriter = new FileStream(unzipper_textBox1.Text + unzipName_textBox4.Text, FileMode.Create, FileAccess.Write);
-            BuiltFileList();
-
-            fileResultReader.Position = 0;
-            WriteToFile();
-            fileResultReader.Close();
-            fileWriter.Close();
-            if (successTip == true)
-                unzipperLabel.Text = "解压成功";
-            else
-                unzipperLabel.Text = errorString;
+            
         }
 
         static void BuildFileArray()//读取tempFile
@@ -1171,6 +1408,11 @@ namespace WindowsFormsApp1_combination
                             fileList[(int)tempPositionB] = tempValueB1;//写入更改值，替换源文件中值
                             fileList[(int)tempPositionB + 1] = tempValueB2;//写入更改值，替换源文件中值
                         }
+                    }
+
+                    else if(tempType == 0xfa)
+                    {
+                        fileResultReader.Position += 2;
                     }
 
                     else
@@ -1285,6 +1527,12 @@ namespace WindowsFormsApp1_combination
                         fileResultReader.Position += (positionCount * addressLength);//跳过地址
                     }
 
+                    else if (tempType == 0xfa)
+                    {
+                        fileResultReader.Position += 2;
+                        diff += 2;
+                    }
+
                     else
                     {
                         successTip = false;
@@ -1302,6 +1550,169 @@ namespace WindowsFormsApp1_combination
                 }
             }
         }
+
+        /*static void BuiltFileList()//把FRR里内容合并到result里//新
+        {
+            fileList.Clear();
+            int tempV = 0;//把old转录到tempFile中
+            while ((tempV = fileBaseReader.ReadByte()) != -1)
+                fileList.Add((byte)tempV);
+
+            //修改tempFile
+            fileResultReader.Position = 32;
+            addressLength = fileResultReader.ReadByte();//获得地址长度
+
+            {//第二次循环，更改其他元素以及赋值到结果
+                int tempType = 0;
+                while ((tempType = fileResultReader.ReadByte()) != -1)
+                {
+                    if (tempType == 0xff)//更改ff部分
+                    {
+                        switch (fileResultReader.ReadByte())
+                        {
+                            case 0x01://替换
+                                {
+                                    int basePosition = 0;
+                                    int baseLength = 0;
+                                    int resultLentgh = 0;
+                                    for (int i = 0; i < addressLength; i++)//被替换地址
+                                        basePosition |= ((fileResultReader.ReadByte() & 0xff) << (8 * i));
+
+                                    for (int i = 0; i < addressLength; i++)//被替换长度
+                                        baseLength |= ((fileResultReader.ReadByte() & 0xff) << (8 * i));
+                                    for (int i = 0; i < addressLength; i++)//替换长度
+                                        resultLentgh |= ((fileResultReader.ReadByte() & 0xff) << (8 * i));
+
+                                    basePosition += diff;
+                                    fileList.RemoveRange(basePosition, baseLength);//先删除
+                                    diff -= baseLength;
+
+                                    byte[] temp = new byte[resultLentgh];
+                                    for (int i = 0; i < resultLentgh; i++)//再添加
+                                        temp[i] = (byte)fileResultReader.ReadByte();
+                                    fileList.InsertRange(basePosition, temp);
+                                    diff += resultLentgh;
+                                }
+                                break;
+
+                            case 0x02://删除
+                                {
+                                    int basePosition = 0;
+                                    int baseLength = 0;
+                                    for (int i = 0; i < addressLength; i++)//被删除地址
+                                        basePosition |= ((fileResultReader.ReadByte() & 0xff) << (8 * i));
+                                    for (int i = 0; i < addressLength; i++)//被删除长度
+                                        baseLength |= ((fileResultReader.ReadByte() & 0xff) << (8 * i));
+
+                                    basePosition += diff;
+                                    fileList.RemoveRange(basePosition, baseLength);//删除
+                                    diff -= baseLength;
+                                }
+                                break;
+
+                            case 0x03://增加
+                                {
+                                    int basePosition = 0;
+                                    int resultLentgh = 0;
+                                    for (int i = 0; i < addressLength; i++)//被增加地址
+                                        basePosition |= ((fileResultReader.ReadByte() & 0xff) << (8 * i));
+                                    basePosition += diff;
+                                    for (int i = 0; i < addressLength; i++)//增加长度
+                                        resultLentgh |= ((fileResultReader.ReadByte() & 0xff) << (8 * i));
+
+                                    byte[] temp = new byte[resultLentgh];
+                                    for (int i = 0; i < resultLentgh; i++)//添加新元素
+                                        temp[i] = (byte)fileResultReader.ReadByte();
+                                    fileList.InsertRange(basePosition, temp);
+                                    diff += resultLentgh;
+
+
+                                }
+                                break;
+
+                            default:
+                                successTip = false;
+                                errorString = "参数错误，退出1";
+                                Console.WriteLine(@"参数错误，退出1");
+                                return;
+                        }
+                    }
+
+                    else if (tempType == 0xaa)//单元素替换
+                    {
+                        byte tempValueA = (byte)fileResultReader.ReadByte();//取主元素
+                        Int64 positionCount = 0;//取地址个数
+                        for (int i = 0; i < addressLength; i++)
+                            positionCount |= (Int64)((fileResultReader.ReadByte() & 0xff) << (i * 8));
+                        while (positionCount > 0)//取每个地址
+                        {
+                            Int64 tempPositionA = 0;
+                            for (int i = 0; i < addressLength; i++)
+                                tempPositionA |= (Int64)((fileResultReader.ReadByte() & 0xff) << (i * 8));
+                            if (tempPositionA >= fileBaseReader.Length)
+                            {
+                                successTip = false;
+                                errorString = "读取到错误长度1";
+                                Console.WriteLine(@"读取到错误长度1");
+                                return;
+                            }
+                            tempPositionA += diff;
+                            positionCount--;
+
+                            fileList[(int)tempPositionA] = tempValueA;//写入更改值，替换源文件中值
+                        }
+                    }
+
+                    else if (tempType == 0xbb)//双元素替换
+                    {
+                        byte tempValueB1 = (byte)fileResultReader.ReadByte();//取主元素
+                        byte tempValueB2 = (byte)fileResultReader.ReadByte();//取主元素
+                        Int64 positionCount = 0;//取地址个数
+                        for (int i = 0; i < addressLength; i++)
+                            positionCount |= (Int64)((fileResultReader.ReadByte() & 0xff) << (i * 8));
+                        while (positionCount > 0)//取每个地址
+                        {
+                            Int64 tempPositionB = 0;
+                            for (int i = 0; i < addressLength; i++)
+                                tempPositionB |= (Int64)((fileResultReader.ReadByte() & 0xff) << (i * 8));
+                            if (tempPositionB >= fileBaseReader.Length)
+                            {
+                                successTip = false;
+                                errorString = "读取到错误长度2";
+                                Console.WriteLine(@"读取到错误长度2");
+                                return;
+                            }
+                            tempPositionB += diff;
+                            positionCount--;
+
+                            fileList[(int)tempPositionB] = tempValueB1;//写入更改值，替换源文件中值
+                            fileList[(int)tempPositionB + 1] = tempValueB2;//写入更改值，替换源文件中值
+                        }
+                    }
+
+                    else if (tempType == 0xfa)
+                    {
+                        fileResultReader.Position += 2;
+                        diff += 2;
+                    }
+
+                    else
+                    {
+                        successTip = false;
+                        errorString = "元素头搜索错误3";
+                        Console.WriteLine(@"元素头搜索错误3");
+                        return;
+                    }
+                }
+
+                if (fileResultReader.Position > fileResultReader.Length)
+                {
+                    successTip = false;
+                    errorString = "错误3";
+                    Console.WriteLine(@"错误3");
+                }
+            }
+        }*/
         static void WriteToFile()
         {
             fileWriter.Position = 0;
@@ -1318,79 +1729,94 @@ namespace WindowsFormsApp1_combination
 
         }
 
+        static int checkMassageCount = 0;
+        static bool checkSuccess = true;
         private void check_Click(object sender, EventArgs e)
         {
-            checkDetail_textBox1.Clear();
-            checkResult_textBox5.Clear();
-            if (unzipName_textBox4.TextLength == 0)
-                unzipName_textBox4.Text = resultFileName_textBox.Text;
-            if(unzipName_textBox4.TextLength == 0)
+            try
             {
-                errorProvider1.SetError(label13, "请输入名称");
-                return;
-            }
-            unzipName = unzipName_textBox4.Text;
-
-            if (fileAdd2_ok == true)
-            {
-                
-                //结果地址
-                fileType = type_comboBox1.SelectedItem.ToString();
-                resultFileAddress = fileOutPut_textBox3.Text + unzipName + "_check" + fileType;
-                fileReader1 = new FileStream(fileInPut_textBox2.Text, FileMode.Open, FileAccess.Read);
-                fileReader2 = new FileStream(unzipper_textBox1.Text + unzipName_textBox4.Text, FileMode.Open, FileAccess.Read);
-                //finalWriter = resultWriter; //new FileStream(@"C:\Users\Master\Desktop\finalWriter.bin", FileMode.Create, FileAccess.Write);
-                if (fileType == ".txt")
-                {
-                    resultWriterForText = new StreamWriter(resultWriter, Encoding.UTF8);
-                    resultWriterForText.AutoFlush = true;
-                }
-
-                Console.WriteLine(@"格        式：{0}", 0);
-                checkDetail_textBox1.AppendText(string.Format(@"格        式：{0}", 0) + "\r\n");
-                Console.WriteLine(@"厂 商 代 码 ：{0}", 0);
-                checkDetail_textBox1.AppendText(string.Format(@"厂 商 代 码 ：{0}", 0) + "\r\n");
-                Console.WriteLine(@"目 标 版 本 ：{0}", 0);
-                checkDetail_textBox1.AppendText(string.Format(@"目 标 版 本 ：{0}", 0) + "\r\n");
-                Console.WriteLine(@"升级包校验码：{0}", 0);
-                checkDetail_textBox1.AppendText(string.Format(@"升级包校验码：{0}", 0) + "\r\n");
-                Console.WriteLine(@"升级后校验码：{0}", 0);
-                checkDetail_textBox1.AppendText(string.Format(@"升级后校验码：{0}", 0) + "\r\n");
-                Console.WriteLine(@"保        留：{0}\r\n", 0);
-                checkDetail_textBox1.AppendText(string.Format(@"保        留：{0}", 0) + "\r\n\r\n");
-
-                //写入头
-
                 checkTip = true;
-                dataLineListA = new List<DataLineStruct>();
-                dataLineListB = new List<DataLineStruct>();
-                dataLineListA.Clear();
-                dataLineListB.Clear();
-                play();
-                //AddSameElements();
-                WriteListToFile();
-                start.Enabled = true;
-                search.Enabled = true;
-                fileReader1.Close();
-                fileReader2.Close();
-                checkDetail_textBox1.AppendText("\r\n");
-                checkDetail_textBox1.AppendText("内容包数量：" + massageCount);
-                if (massageCount == 0)
-                    checkResult_textBox5.Text = "无差异，验证正确";
+                checkDetail_textBox1.Clear();
+                checkResult_textBox5.Clear();
+                if (unzipName_textBox4.TextLength == 0)
+                    unzipName_textBox4.Text = resultFileName_textBox.Text;
+                if (unzipName_textBox4.TextLength == 0)
+                {
+                    errorProvider1.SetError(label13, "请输入名称");
+                    return;
+                }
+                unzipName = unzipName_textBox4.Text;
+
+                if (fileAdd2_ok == true)
+                {
+
+                    //结果地址
+                    fileType = type_comboBox1.SelectedItem.ToString();
+                    fileReader1 = new FileStream(fileInPut_textBox2.Text, FileMode.Open, FileAccess.Read);
+                    fileReader2 = new FileStream(unzipper_textBox1.Text + unzipName_textBox4.Text, FileMode.Open, FileAccess.Read);
+                    if (fileType == ".txt")
+                    {
+                        resultWriterForText = new StreamWriter(resultWriter, Encoding.UTF8);
+                        resultWriterForText.AutoFlush = true;
+                    }
+
+                    Console.WriteLine(@"格        式：");
+                    checkDetail_textBox1.AppendText(string.Format(@"格        式："));
+                    printHead(head1_Byte);
+                    Console.WriteLine(@"厂 商  代 码：");
+                    checkDetail_textBox1.AppendText(string.Format(@"厂 商  代 码："));
+                    printHead(head2_Byte);
+                    Console.WriteLine(@"目 标  版 本：");
+                    checkDetail_textBox1.AppendText(string.Format(@"目 标  版 本："));
+                    printHead(head3_Byte);
+                    Console.WriteLine(@"升级包校验码：");
+                    checkDetail_textBox1.AppendText(string.Format(@"升级包校验码："));
+                    printHead(head4_Byte);
+                    Console.WriteLine(@"升级后校验码：");
+                    checkDetail_textBox1.AppendText(string.Format(@"升级后校验码："));
+                    printHead(head5_Byte);
+                    Console.WriteLine(@"保        留：");
+                    checkDetail_textBox1.AppendText(string.Format(@"保        留："));
+                    printHead(head6_Byte);
+                    Console.WriteLine(@"保        留：");
+                    checkDetail_textBox1.AppendText("\r\n");
+
+                    //写入头
+
+                    checkMassageCount = 0;
+                    checkTip = true;
+                    dataLineListA = new List<DataLineStruct>();
+                    dataLineListB = new List<DataLineStruct>();
+                    dataLineListA.Clear();
+                    dataLineListB.Clear();
+                    play();
+                    //AddSameElements();
+                    WriteListToFile();
+                    start.Enabled = true;
+                    search.Enabled = true;
+                    fileReader1.Close();
+                    fileReader2.Close();
+                    checkDetail_textBox1.AppendText("\r\n");
+                    checkDetail_textBox1.AppendText("内容包数量：" + checkMassageCount);
+                    if (checkMassageCount == 0)
+                        checkResult_textBox5.Text = "无差异，验证成功";
+                    else
+                        checkResult_textBox5.Text = "验证错误，请确认解压或验证过程中文件是否有变化，或验证差异原因";
+                    checkTip = false;
+                }
                 else
-                    checkResult_textBox5.Text = "验证错误，请确认解压或验证过程中是否文件有变化，或验证差异原因";
-                checkTip = false;
+                    errorProvider1.SetError(label7, "请选择地址");
             }
-            else
-                errorProvider1.SetError(label7, "请选择地址");
+            catch (Exception ex)
+            {
+                checkResult_textBox5.AppendText(DateTime.Now.ToString() + "  " + ex.Message);
+            }
         }
 
-        static int ckeckMassageCount = 0;
-        static bool checkSuccess = true;
         private void CheckRecordAndQuit(Int64 theLocationHeadHoldA, Int64 theLocationHeadHoldB, Int64 theLocationRootA, Int64 theLocationRootB, int type)
         {
             checkSuccess = false;
-            ckeckMassageCount++;
+            checkMassageCount++;
             Int64 lengthA = theLocationRootA - theLocationHeadHoldA;
             Int64 lengthB = theLocationRootB - theLocationHeadHoldB; //int i = 0;
             Int64 theLengthA = lengthA;
@@ -1434,7 +1860,7 @@ namespace WindowsFormsApp1_combination
                 Console.WriteLine(@" ");
                 checkDetail_textBox1.AppendText("\r\n");
             }
-            searchLoop = false;
+            rootLoop = false;
         }
     }
 }
